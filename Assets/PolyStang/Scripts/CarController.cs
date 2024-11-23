@@ -81,13 +81,12 @@ namespace PolyStang
         private CarLights carLights;
         private CarSounds carSounds;
 
-        void Start() // called the first frame, when the game starts.
+        protected void InitializeCarComponents()
         {
             carRb = GetComponent<Rigidbody>();
-            carRb.centerOfMass = _centerOfMass;
-
             carLights = GetComponent<CarLights>();
             carSounds = GetComponent<CarSounds>();
+            carRb.centerOfMass = _centerOfMass;
         }
 
         void Update() // called every frame.
@@ -116,7 +115,7 @@ namespace PolyStang
             steerInput = input;
         }
 
-        void GetInputs() // inputs.
+        protected void GetInputs() // inputs.
         {
             if (control == ControlMode.Keyboard)
             {
@@ -125,7 +124,7 @@ namespace PolyStang
             }
         }
 
-        void Move() // main vertical acceleration.
+        protected void Move() // main vertical acceleration.
         {
             foreach (var wheel in wheels)
             {
@@ -183,7 +182,7 @@ namespace PolyStang
             }
         }
 
-        void Steer() // to rotate the front wheels, when steering.
+        protected void Steer() // to rotate the front wheels, when steering.
         {
             foreach (var wheel in wheels)
             {
@@ -195,7 +194,7 @@ namespace PolyStang
             }
         }
 
-        void BrakeAndDeacceleration()
+        protected void BrakeAndDeacceleration()
         {
             if (Input.GetKey(brakeKey)) // when pressing space, the brake is used.
             {
@@ -221,7 +220,7 @@ namespace PolyStang
             }
         }
 
-        void AnimateWheels() // to animate wheels accordingly to the car speed.
+        protected void AnimateWheels() // to animate wheels accordingly to the car speed.
         {
             foreach (var wheel in wheels)
             {
@@ -233,7 +232,7 @@ namespace PolyStang
             }
         }
 
-        void WheelEffectsCheck() // checking for every wheel if it's slipping: if yes, the "EffectCreate()" function is called.
+        protected void WheelEffectsCheck() // checking for every wheel if it's slipping: if yes, the "EffectCreate()" function is called.
         {
             foreach (var wheel in wheels)
             {
@@ -269,7 +268,7 @@ namespace PolyStang
             carSounds.PlaySkidSound(wheel.skidSound); // actually setting the volume of the skid to 1
         }
 
-        void CarLightsControl() // controlling lights, through the specific script "CarSounds".
+        protected void CarLightsControl() // controlling lights, through the specific script "CarSounds".
         {
             if (Input.GetKey(brakeKey)) // the red lights are activated when the brake is pressed
             {
@@ -290,7 +289,7 @@ namespace PolyStang
             }
         }
 
-        void UpdateSpeedUI() // UI: speed update.
+        protected void UpdateSpeedUI() // UI: speed update.
         {
             int roundedSpeed = (int)Mathf.Round(carRb.velocity.magnitude * UISpeedMultiplier);
             speedText.text = roundedSpeed.ToString();
