@@ -375,7 +375,6 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 2044099471898219832}
-  - component: {fileID: 3398106580507080864}
   - component: {fileID: 3398106580824784546}
   - component: {fileID: 3398106580824784545}
   - component: {fileID: 5618575825336952164}
@@ -415,64 +414,6 @@ Transform:
   - {fileID: 704947788181027069}
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!114 &3398106580507080864
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1663456704294997890}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: cbbfc52a303950340922ce4555a6401c, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  control: 0
-  brakeKey: 32
-  maxAcceleration: 90
-  brakeAcceleration: 120
-  noInputDeacceleration: 10
-  turnSensitivity: 1
-  maxSteerAngle: 30
-  speedText: {fileID: 0}
-  UISpeedMultiplier: 4
-  frontMaxSpeed: 200
-  rearMaxSpeed: 50
-  empiricalCoefficient: 0.419
-  typeOfSpeedLimit: 2
-  brakeDriftingSkidLimit: 20
-  lateralFrontDriftingSkidLimit: 0.7
-  lateralRearDriftingSkidLimit: 0.3
-  _centerOfMass: {x: 0, y: 0.05, z: 0}
-  wheels:
-  - wheelModel: {fileID: 5979557620761577061}
-    wheelCollider: {fileID: 3398106580507080877}
-    wheelEffectObj: {fileID: 3398106580232485611}
-    smokeParticle: {fileID: 1813649545831061807}
-    axel: 0
-    skidSound: {fileID: 5618575825556995975}
-    index: 0
-  - wheelModel: {fileID: 1917998726845408817}
-    wheelCollider: {fileID: 3398106580507080878}
-    wheelEffectObj: {fileID: 3398106579478824520}
-    smokeParticle: {fileID: 3813831262783921294}
-    axel: 0
-    skidSound: {fileID: 5618575824219502897}
-    index: 1
-  - wheelModel: {fileID: 6311886845423106955}
-    wheelCollider: {fileID: 3398106580507080879}
-    wheelEffectObj: {fileID: 3398106579552756315}
-    smokeParticle: {fileID: 3813831262012190593}
-    axel: 1
-    skidSound: {fileID: 5618575824624948737}
-    index: 2
-  - wheelModel: {fileID: 4409633903809265692}
-    wheelCollider: {fileID: 7498782597212933370}
-    wheelEffectObj: {fileID: 3398106579426991015}
-    smokeParticle: {fileID: 3813831264010688489}
-    axel: 1
-    skidSound: {fileID: 5618575825794875648}
-    index: 3
 --- !u!114 &3398106580824784546
 MonoBehaviour:
   m_ObjectHideFlags: 0

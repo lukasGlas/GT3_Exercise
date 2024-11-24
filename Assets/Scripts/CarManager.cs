@@ -1,10 +1,11 @@
-﻿using UnityEngine;
-using PolyStang;
+﻿using PolyStang;
 
-namespace DefaultNamespace
-{
-    public class CarLifecycle : CarController
+    public class CarLifecycle
     {
+        public CarController greenCar; // middle car
+        public CarController blueCar; // left car
+        public CarController redCar; // right car
+        
         /* Where do these methods go?
             InitializeCarComponents();
             GetInputs();
@@ -16,6 +17,7 @@ namespace DefaultNamespace
             BrakeAndDeacceleration();
             UpdateSpeedUI();
          */
+        
         // Awake is called when the script instance is being loaded
         private void Awake()
         {
@@ -65,4 +67,3 @@ namespace DefaultNamespace
 
         }
     }
-}
