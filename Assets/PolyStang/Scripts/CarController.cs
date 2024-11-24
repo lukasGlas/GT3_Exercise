@@ -81,7 +81,7 @@ namespace PolyStang
         private CarLights carLights;
         private CarSounds carSounds;
 
-        protected void InitializeCarComponents()
+        public void InitializeCarComponents()
         {
             carRb = GetComponent<Rigidbody>();
             carLights = GetComponent<CarLights>();
@@ -89,33 +89,7 @@ namespace PolyStang
             carRb.centerOfMass = _centerOfMass;
         }
 
-        void Update() // called every frame.
-        {
-            GetInputs();
-            AnimateWheels();
-            WheelEffectsCheck();
-            CarLightsControl();
-        }
-
-        void LateUpdate() // called after the "Update()" function.
-        {
-            Move();
-            Steer();
-            BrakeAndDeacceleration();
-            UpdateSpeedUI();
-        }
-
-        public void MoveInput(float input) // used for touch controls.
-        {
-            moveInput = input;
-        }
-
-        public void SteerInput(float input) // used for touch controls.
-        {
-            steerInput = input;
-        }
-
-        protected void GetInputs() // inputs.
+        public void ProcessPlayerInputs() // inputs.
         {
             if (control == ControlMode.Keyboard)
             {
@@ -124,7 +98,7 @@ namespace PolyStang
             }
         }
 
-        protected void Move() // main vertical acceleration.
+        public void MoveCarForward() // main vertical acceleration.
         {
             foreach (var wheel in wheels)
             {
@@ -182,6 +156,58 @@ namespace PolyStang
             }
         }
 
+        public void AnimateWheels() // to animate wheels accordingly to the car speed.
+        {
+            foreach (var wheel in wheels)
+            {
+                Quaternion rot;
+                Vector3 pos;
+                wheel.wheelCollider.GetWorldPose(out pos, out rot);
+                wheel.wheelModel.transform.position = pos;
+                wheel.wheelModel.transform.rotation = rot;
+            }
+            
+            AnimateWheelDrift();
+        }
+        
+        public void DisplayCarLights() // controlling lights, through the specific script "CarSounds".
+        {
+            if (Input.GetKey(brakeKey)) // the red lights are activated when the brake is pressed
+            {
+                carLights.RearRedLightsOn();
+            }
+            else
+            {
+                carLights.RearRedLightsOff();
+            }
+
+            if (moveInput < 0f) // the rear white lights are activated when the player is pressing "S" or down arrow.
+            {
+                carLights.RearWhiteLightsOn();
+            }
+            else
+            {
+                carLights.RearWhiteLightsOff();
+            }
+        }
+
+        public void UpdateSpeedUI() // UI: speed update.
+        {
+            int roundedSpeed = (int)Mathf.Round(carRb.velocity.magnitude * UISpeedMultiplier);
+            speedText.text = roundedSpeed.ToString();
+        }
+
+        public void MoveInput(float input) // used for touch controls.
+        {
+            moveInput = input;
+        }
+
+        public void SteerInput(float input) // used for touch controls.
+        {
+            steerInput = input;
+        }
+
+
         protected void Steer() // to rotate the front wheels, when steering.
         {
             foreach (var wheel in wheels)
@@ -220,19 +246,14 @@ namespace PolyStang
             }
         }
 
-        protected void AnimateWheels() // to animate wheels accordingly to the car speed.
+        private void EffectCreate(Wheel wheel) // actually creating the effects: 1) trail renderer for the skid, 2) smoke particles, 3) skid sound.
         {
-            foreach (var wheel in wheels)
-            {
-                Quaternion rot;
-                Vector3 pos;
-                wheel.wheelCollider.GetWorldPose(out pos, out rot);
-                wheel.wheelModel.transform.position = pos;
-                wheel.wheelModel.transform.rotation = rot;
-            }
+            wheel.wheelEffectObj.GetComponentInChildren<TrailRenderer>().emitting = true;
+            wheel.smokeParticle.Emit(1);
+            carSounds.PlaySkidSound(wheel.skidSound); // actually setting the volume of the skid to 1
         }
-
-        protected void WheelEffectsCheck() // checking for every wheel if it's slipping: if yes, the "EffectCreate()" function is called.
+        
+        private void AnimateWheelDrift() // checking for every wheel if it's slipping: if yes, the "EffectCreate()" function is called.
         {
             foreach (var wheel in wheels)
             {
@@ -261,38 +282,6 @@ namespace PolyStang
             }
         }
 
-        private void EffectCreate(Wheel wheel) // actually creating the effects: 1) trail renderer for the skid, 2) smoke particles, 3) skid sound.
-        {
-            wheel.wheelEffectObj.GetComponentInChildren<TrailRenderer>().emitting = true;
-            wheel.smokeParticle.Emit(1);
-            carSounds.PlaySkidSound(wheel.skidSound); // actually setting the volume of the skid to 1
-        }
 
-        protected void CarLightsControl() // controlling lights, through the specific script "CarSounds".
-        {
-            if (Input.GetKey(brakeKey)) // the red lights are activated when the brake is pressed
-            {
-                carLights.RearRedLightsOn();
-            }
-            else
-            {
-                carLights.RearRedLightsOff();
-            }
-
-            if (moveInput < 0f) // the rear white lights are activated when the player is pressing "S" or down arrow.
-            {
-                carLights.RearWhiteLightsOn();
-            }
-            else
-            {
-                carLights.RearWhiteLightsOff();
-            }
-        }
-
-        protected void UpdateSpeedUI() // UI: speed update.
-        {
-            int roundedSpeed = (int)Mathf.Round(carRb.velocity.magnitude * UISpeedMultiplier);
-            speedText.text = roundedSpeed.ToString();
-        }
-    }
+      }
 }
