@@ -7,17 +7,45 @@ public class CarManager : MonoBehaviour
         public CarController blueCar; // left car
         public CarController redCar; // right car
         
-        /* Where do these methods go?
-            InitializeCarComponents();
-            ProcessPlayerInputs();
-            AnimateWheels();
-            DisplayCarLights();
-            MoveCarForward();
-            UpdateSpeedUI();
+        /* Aufgabe 1: Suche dir ein Auto aus und nutze die Methodenaufrufe in den richtigen Event-Funktionen,
+         um mit dem Auto ans Ziel zu gelangen:
+            car.ActivateSelf();
+            car.AnimateWheels();
+            car.DestroySelf();
+            car.DisplayCarLights();
+            car.InitializeCarComponents();
+            car.MoveCarForward();
+            car.ProcessMovement();
+            car.ProcessPlayerInputs();
+            car.UpdateSpeedUI();
+            
+            Aufgabe 2: Füge auch Methodenaufrufe für die anderen beiden Autos hinzu, aber in unterschiedlicher
+            Reihenfolge zu deinem ersten Auto. Experimentiere mit verschiedenen Kombinationen. Was fällt dir auf?
          */
         
         // Awake is called when the script instance is being loaded
         private void Awake() // Initialization logic that should occur before the scene is active
+        {
+            // GREEN CAR
+            
+            // BLUE CAR
+            
+            // RED CAR
+        }
+        
+        // Start is called before the first frame update if the script is enabled
+        private void Start() // Initialization logic that depends on all game objects being initialized
+        {
+            // GREEN CAR
+            greenCar.ActivateSelf();
+            // BLUE CAR
+            blueCar.ActivateSelf();
+            // RED CAR
+            redCar.ActivateSelf();
+        }
+
+        // OnEnable is called when the object becomes enabled and active
+        private void OnEnable() // Logic to initialize when the object is activated
         {
             // GREEN CAR
             greenCar.InitializeCarComponents();
@@ -26,35 +54,16 @@ public class CarManager : MonoBehaviour
             // RED CAR
             redCar.InitializeCarComponents();
         }
-        
-        // Start is called before the first frame update if the script is enabled
-        private void Start() // Initialization logic that depends on all game objects being initialized
-        {
-            // GREEN CAR
-
-            // BLUE CAR
-            
-            // RED CAR
-        }
-
-        // OnEnable is called when the object becomes enabled and active
-        private void OnEnable() // Logic to initialize when the object is activated
-        {
-            // GREEN CAR
-            
-            // BLUE CAR
-            
-            // RED CAR
-        }
 
         // OnDisable is called when the behaviour becomes disabled or inactive
         private void OnDisable() // Logic for cleanup when the object is deactivated
         {
             // GREEN CAR
-            
+            greenCar.DestroySelf();
             // BLUE CAR
-            
+            blueCar.DestroySelf();
             // RED CAR
+            redCar.DestroySelf();
         }
 
         // OnDestroy is called when the MonoBehaviour will be destroyed
@@ -72,39 +81,40 @@ public class CarManager : MonoBehaviour
         {
             // GREEN CAR
             greenCar.ProcessPlayerInputs();
-            greenCar.AnimateWheels();
             greenCar.DisplayCarLights();
+            greenCar.AnimateWheels();
             // BLUE CAR
             blueCar.ProcessPlayerInputs();
             blueCar.DisplayCarLights();
+            blueCar.AnimateWheels();
             // RED CAR
            redCar.ProcessPlayerInputs();
+           redCar.DisplayCarLights();
+           redCar.AnimateWheels();
         }
 
         // FixedUpdate is called at a fixed interval and is independent of frame rate
         private void FixedUpdate() // Physics-related calculations
         {
             // GREEN CAR
-            
+            greenCar.ProcessMovement();
+            greenCar.DeactivateOnFinishLineCrossing();
             // BLUE CAR
-            blueCar.AnimateWheels();
-            blueCar.MoveCarForward();
-            blueCar.UpdateSpeedUI();
+            blueCar.ProcessMovement();
+            blueCar.DeactivateOnFinishLineCrossing();
             // RED CAR
-            redCar.MoveCarForward();
+            redCar.ProcessMovement();
+            redCar.DeactivateOnFinishLineCrossing();
         }
 
         // LateUpdate is called once per frame, after Update has finished
         private void LateUpdate() // Adjustments to the game scene based on updates (e.g., follow camera logic) 
         {
             // GREEN CAR
-            greenCar.MoveCarForward();
             greenCar.UpdateSpeedUI();
             // BLUE CAR
-            
+            blueCar.UpdateSpeedUI();
             // RED CAR
-            redCar.AnimateWheels();
             redCar.UpdateSpeedUI();
-
         }
     }

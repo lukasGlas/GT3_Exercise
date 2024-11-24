@@ -81,6 +81,8 @@ namespace PolyStang
         private CarLights carLights;
         private CarSounds carSounds;
 
+        private bool finished = false;
+
         public void InitializeCarComponents()
         {
             carRb = GetComponent<Rigidbody>();
@@ -98,7 +100,7 @@ namespace PolyStang
             }
         }
 
-        public void MoveCarForward() // main vertical acceleration.
+        public void ProcessMovement() // main vertical acceleration.
         {
             foreach (var wheel in wheels)
             {
@@ -197,18 +199,44 @@ namespace PolyStang
             speedText.text = roundedSpeed.ToString();
         }
 
-        public void MoveInput(float input) // used for touch controls.
+        public void ActivateSelf()
+        {
+            gameObject.SetActive(true);
+        }
+
+        public void DestroySelf()
+        {
+            Destroy(this.gameObject);
+        }
+
+        public void DeactivateOnFinishLineCrossing()
+        {
+            if (finished)
+            {
+                this.gameObject.SetActive(false);
+            } 
+        }
+
+        private void OnTriggerEnter(Collider other)
+        {
+            if (other.CompareTag("FinishLine"))
+            {
+                finished = true;
+            }
+        }
+
+        private void MoveInput(float input) // used for touch controls.
         {
             moveInput = input;
         }
 
-        public void SteerInput(float input) // used for touch controls.
+        private void SteerInput(float input) // used for touch controls.
         {
             steerInput = input;
         }
 
 
-        protected void Steer() // to rotate the front wheels, when steering.
+        private void Steer() // to rotate the front wheels, when steering.
         {
             foreach (var wheel in wheels)
             {
@@ -220,7 +248,7 @@ namespace PolyStang
             }
         }
 
-        protected void BrakeAndDeacceleration()
+        private void BrakeAndDeacceleration()
         {
             if (Input.GetKey(brakeKey)) // when pressing space, the brake is used.
             {
