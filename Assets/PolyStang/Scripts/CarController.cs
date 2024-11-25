@@ -2,6 +2,8 @@ using UnityEngine;
 using System;
 using System.Collections.Generic;
 using TMPro;
+using Unity.Collections;
+using Unity.Jobs;
 
 namespace PolyStang
 {
@@ -83,6 +85,9 @@ namespace PolyStang
 
         private bool finished = false;
 
+        NativeArray<int> result;
+        JobHandle jobHandle;
+
         public void InitializeCarComponents()
         {
             carRb = GetComponent<Rigidbody>();
@@ -113,12 +118,12 @@ namespace PolyStang
                 float currentWheelSpeed = empiricalCoefficient * wheel.wheelCollider.radius * wheel.wheelCollider.rpm;
 
                 if (moveInput > 0 || currentWheelSpeed > 0) // when moving forwards
-                { 
-                    if(currentWheelSpeed > frontMaxSpeed) // important check: it prevents the car from accelerating indefinetly
+                {
+                    if (currentWheelSpeed > frontMaxSpeed) // important check: it prevents the car from accelerating indefinetly
                     {
                         currentWheelSpeed = frontMaxSpeed;
                     }
-                    
+
                     // cases: different speed reducing technics
                     if (typeOfSpeedLimit == TypeOfSpeedLimit.noSpeedLimit)
                     {
@@ -126,7 +131,7 @@ namespace PolyStang
                     }
                     else if (typeOfSpeedLimit == TypeOfSpeedLimit.simple)
                     {
-                        frontSpeedReducer = (frontMaxSpeed - currentWheelSpeed ) / frontMaxSpeed;
+                        frontSpeedReducer = (frontMaxSpeed - currentWheelSpeed) / frontMaxSpeed;
                     }
                     else if (typeOfSpeedLimit == TypeOfSpeedLimit.squareRoot)
                     {
@@ -138,9 +143,9 @@ namespace PolyStang
                 }
                 else if (moveInput < 0 || currentWheelSpeed < 0) // when moving backwards
                 {
-                    if (currentWheelSpeed < - rearMaxSpeed) // important check: it prevents the car from accelerating indefinetly
+                    if (currentWheelSpeed < -rearMaxSpeed) // important check: it prevents the car from accelerating indefinetly
                     {
-                        currentWheelSpeed = - rearMaxSpeed;
+                        currentWheelSpeed = -rearMaxSpeed;
                     }
 
                     // cases: different speed reducing technics
@@ -173,10 +178,10 @@ namespace PolyStang
                 wheel.wheelModel.transform.position = pos;
                 wheel.wheelModel.transform.rotation = rot;
             }
-            
+
             AnimateWheelDrift();
         }
-        
+
         public void DisplayCarLights() // controlling lights, through the specific script "CarSounds".
         {
             if (Input.GetKey(brakeKey)) // the red lights are activated when the brake is pressed
@@ -204,6 +209,11 @@ namespace PolyStang
             speedText.text = roundedSpeed.ToString();
         }
 
+        public int calculateRoundedSpeed()
+        {
+            return (int)Mathf.Round(carRb.velocity.magnitude * UISpeedMultiplier);
+        }
+
         /*  Angenommen, bei calculateRoundedSpeed() handelte es sich um eine etwas komplexere
          *  Berechnung, die viele Male pro Frame ausgeführt wird. Unter diesen Umständen könnte
          *  es aus Performance-Gründen sinnvoll sein, die Berechnung auf mehreren Threads parallel
@@ -211,11 +221,44 @@ namespace PolyStang
          *
          *  Berechne roundedSpeed auf mehreren Threads parallel und zeige die berechneten Werte mit
          *  UpdateSpeedUI() im gleichen Frame an.
+         *  Welche Methoden im Game-Loop sind für das Starten / Beenden der Berechnung sinnvoll?
          */
 
-        public int calculateRoundedSpeed()
+        //Musterlösung, löschen!
+        public void startSpeedCalculation()
         {
-            return (int)Mathf.Round(carRb.velocity.magnitude * UISpeedMultiplier);
+            result = new NativeArray<int>(1, Allocator.TempJob);
+
+            calculateSpeedJob speedJob = new calculateSpeedJob
+            {
+                speed = carRb.velocity.magnitude,
+                uiSpeedMultiplier = UISpeedMultiplier,
+                result = result
+            };
+
+            jobHandle = speedJob.Schedule();
+        }
+
+        //Musterlösung, löschen!
+        public int finishSpeedCalculation()
+        {
+            jobHandle.Complete();
+            int returner = result[0];
+            result.Dispose();
+            return returner;
+        }
+
+        //Musterlösung, löschen!
+        public struct calculateSpeedJob : IJob
+        {
+            public float speed;
+            public float uiSpeedMultiplier;
+            public NativeArray<int> result;
+
+            public void Execute()
+            {
+                result[0] = (int)Mathf.Round(speed * uiSpeedMultiplier);
+            }
         }
 
         public void ActivateSelf()

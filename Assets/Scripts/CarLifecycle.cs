@@ -62,7 +62,6 @@ namespace DefaultNamespace
         private void LateUpdate()
         {
             // Adjustments to the game scene based on updates (e.g., follow camera logic) 
-
         }
     }
 }
