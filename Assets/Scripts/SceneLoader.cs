@@ -16,19 +16,5 @@ public class SceneLoader : MonoBehaviour
     public void startLoading(string sceneName)
     {
         SceneManager.LoadScene(sceneName);
-        //StartCoroutine(LoadYourAsyncScene(sceneName));
-    }
-
-    //Musterlösung, löschen!
-    IEnumerator LoadYourAsyncScene(string sceneName)
-    {
-        AsyncOperation asyncLoad = SceneManager.LoadSceneAsync(sceneName);
-
-        // Wait until the asynchronous scene fully loads
-        while (!asyncLoad.isDone)
-        {
-            print("Loading...");
-            yield return null;
-        }
     }
 }

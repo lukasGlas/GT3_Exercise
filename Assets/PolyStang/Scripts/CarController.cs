@@ -85,9 +85,6 @@ namespace PolyStang
 
         private bool finished = false;
 
-        NativeArray<int> result;
-        JobHandle jobHandle;
-
         public void InitializeCarComponents()
         {
             carRb = GetComponent<Rigidbody>();
@@ -205,7 +202,6 @@ namespace PolyStang
 
         public void UpdateSpeedUI(int roundedSpeed) // UI: speed update.
         {
-            //int roundedSpeed = (int)Mathf.Round(carRb.velocity.magnitude * UISpeedMultiplier);
             speedText.text = roundedSpeed.ToString();
         }
 
@@ -223,43 +219,6 @@ namespace PolyStang
          *  UpdateSpeedUI() im gleichen Frame an.
          *  Welche Methoden im Game-Loop sind für das Starten / Beenden der Berechnung sinnvoll?
          */
-
-        //Musterlösung, löschen!
-        public void startSpeedCalculation()
-        {
-            result = new NativeArray<int>(1, Allocator.TempJob);
-
-            calculateSpeedJob speedJob = new calculateSpeedJob
-            {
-                speed = carRb.velocity.magnitude,
-                uiSpeedMultiplier = UISpeedMultiplier,
-                result = result
-            };
-
-            jobHandle = speedJob.Schedule();
-        }
-
-        //Musterlösung, löschen!
-        public int finishSpeedCalculation()
-        {
-            jobHandle.Complete();
-            int returner = result[0];
-            result.Dispose();
-            return returner;
-        }
-
-        //Musterlösung, löschen!
-        public struct calculateSpeedJob : IJob
-        {
-            public float speed;
-            public float uiSpeedMultiplier;
-            public NativeArray<int> result;
-
-            public void Execute()
-            {
-                result[0] = (int)Mathf.Round(speed * uiSpeedMultiplier);
-            }
-        }
 
         public void ActivateSelf()
         {
