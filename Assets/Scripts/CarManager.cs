@@ -91,30 +91,31 @@ public class CarManager : MonoBehaviour
            redCar.ProcessPlayerInputs();
            redCar.DisplayCarLights();
            redCar.AnimateWheels();
+
+           // GREEN CAR
+           greenCar.ProcessMovement();
+           greenCar.DeactivateOnFinishLineCrossing();
         }
 
         // FixedUpdate is called at a fixed interval and is independent of frame rate
         private void FixedUpdate() // Physics-related calculations
         {
-            // GREEN CAR
-            greenCar.ProcessMovement();
-            greenCar.DeactivateOnFinishLineCrossing();
             // BLUE CAR
-            blueCar.ProcessMovement();
-            blueCar.DeactivateOnFinishLineCrossing();
-            // RED CAR
-            redCar.ProcessMovement();
-            redCar.DeactivateOnFinishLineCrossing();
+           blueCar.ProcessMovement();
+           blueCar.DeactivateOnFinishLineCrossing();
+           // RED CAR
+           redCar.ProcessMovement();
+           redCar.DeactivateOnFinishLineCrossing();
         }
 
         // LateUpdate is called once per frame, after Update has finished
         private void LateUpdate() // Adjustments to the game scene based on updates (e.g., follow camera logic) 
         {
             // GREEN CAR
-            greenCar.UpdateSpeedUI();
+            greenCar.UpdateSpeedUI(greenCar.calculateRoundedSpeed());
             // BLUE CAR
-            blueCar.UpdateSpeedUI();
+            blueCar.UpdateSpeedUI(blueCar.calculateRoundedSpeed());
             // RED CAR
-            redCar.UpdateSpeedUI();
+            redCar.UpdateSpeedUI(redCar.calculateRoundedSpeed());
         }
     }

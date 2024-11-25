@@ -25,8 +25,8 @@ public class FotoFinish : MonoBehaviour
     private void OnTriggerEnter(Collider other)
     {
         switchCamera();
-        //Time.timeScale = 0.1f;
-        StartCoroutine("slowMotionCoroutine");
+        Time.timeScale = 0.1f;
+        //StartCoroutine("slowMotionCoroutine");
     }
 
     //Musterlösung, löschen!

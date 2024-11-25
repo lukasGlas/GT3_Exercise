@@ -102,6 +102,11 @@ namespace PolyStang
 
         public void ProcessMovement() // main vertical acceleration.
         {
+            /*
+            float forwardMovement = transform.position.z + 1 * moveInput;
+            carRb.Move(new Vector3(transform.position.x, transform.position.y, forwardMovement), Quaternion.identity);
+            return;
+            */
             foreach (var wheel in wheels)
             {
                 // rotational speed is proportional to radius * frequency: the empirical coefficient is around 0.41
@@ -193,10 +198,24 @@ namespace PolyStang
             }
         }
 
-        public void UpdateSpeedUI() // UI: speed update.
+        public void UpdateSpeedUI(int roundedSpeed) // UI: speed update.
         {
-            int roundedSpeed = (int)Mathf.Round(carRb.velocity.magnitude * UISpeedMultiplier);
+            //int roundedSpeed = (int)Mathf.Round(carRb.velocity.magnitude * UISpeedMultiplier);
             speedText.text = roundedSpeed.ToString();
+        }
+
+        /*  Angenommen, bei calculateRoundedSpeed() handelte es sich um eine etwas komplexere
+         *  Berechnung, die viele Male pro Frame ausgeführt wird. Unter diesen Umständen könnte
+         *  es aus Performance-Gründen sinnvoll sein, die Berechnung auf mehreren Threads parallel
+         *  auszuführen. Welcher Multithreading Ansatz wäre hierfür geeignet und warum?
+         *
+         *  Berechne roundedSpeed auf mehreren Threads parallel und zeige die berechneten Werte mit
+         *  UpdateSpeedUI() im gleichen Frame an.
+         */
+
+        public int calculateRoundedSpeed()
+        {
+            return (int)Mathf.Round(carRb.velocity.magnitude * UISpeedMultiplier);
         }
 
         public void ActivateSelf()
@@ -254,7 +273,7 @@ namespace PolyStang
             {
                 foreach (var wheel in wheels)
                 {
-                    wheel.wheelCollider.brakeTorque = 300 * brakeAcceleration * Time.deltaTime;
+                    wheel.wheelCollider.brakeTorque = 300 * brakeAcceleration;// * Time.deltaTime;
                 }
 
             }
@@ -262,7 +281,7 @@ namespace PolyStang
             {
                 foreach (var wheel in wheels)
                 {
-                    wheel.wheelCollider.brakeTorque = 300 * noInputDeacceleration * Time.deltaTime;
+                    wheel.wheelCollider.brakeTorque = 300 * noInputDeacceleration;// * Time.deltaTime;
                 }
             }
             else // with vertical input, no brake or deacceleration is applied.
