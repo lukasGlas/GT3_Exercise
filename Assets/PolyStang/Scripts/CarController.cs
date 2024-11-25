@@ -2,14 +2,14 @@ using UnityEngine;
 using System;
 using System.Collections.Generic;
 using TMPro;
-using Unity.Collections;
-using Unity.Jobs;
+
+// SOURCE: https://assetstore.unity.com/packages/tools/physics/polystang-cc-269404?srsltid=AfmBOooN0-gV8ceI0IWfHWmN7OG8pHFUHlmj8BC5heNyGgHoPxXxMLi1
 
 namespace PolyStang
 {
     public class CarController : MonoBehaviour
     {
-        public enum ControlMode // this car controller works for both pc and touch devices. You can switch the control mode from the inspector.
+        public enum ControlMode 
         {
             Keyboard,
             Buttons
@@ -204,22 +204,7 @@ namespace PolyStang
         {
             speedText.text = roundedSpeed.ToString();
         }
-
-        public int calculateRoundedSpeed()
-        {
-            return (int)Mathf.Round(carRb.velocity.magnitude * UISpeedMultiplier);
-        }
-
-        /*  Angenommen, bei calculateRoundedSpeed() handelte es sich um eine etwas komplexere
-         *  Berechnung, die viele Male pro Frame ausgeführt wird. Unter diesen Umständen könnte
-         *  es aus Performance-Gründen sinnvoll sein, die Berechnung auf mehreren Threads parallel
-         *  auszuführen. Welcher Multithreading Ansatz wäre hierfür geeignet und warum?
-         *
-         *  Berechne roundedSpeed auf mehreren Threads parallel und zeige die berechneten Werte mit
-         *  UpdateSpeedUI() im gleichen Frame an.
-         *  Welche Methoden im Game-Loop sind für das Starten / Beenden der Berechnung sinnvoll?
-         */
-
+        
         public void ActivateSelf()
         {
             gameObject.SetActive(true);
@@ -238,6 +223,21 @@ namespace PolyStang
             } 
         }
 
+        public int calculateRoundedSpeed()
+        {
+            return (int)Mathf.Round(carRb.velocity.magnitude * UISpeedMultiplier);
+        }
+
+        /*  Angenommen, bei calculateRoundedSpeed() handelte es sich um eine etwas komplexere
+         *  Berechnung, die viele Male pro Frame ausgefï¿½hrt wird. Unter diesen Umstï¿½nden kï¿½nnte
+         *  es aus Performance-Grï¿½nden sinnvoll sein, die Berechnung auf mehreren Threads parallel
+         *  auszufï¿½hren. Welcher Multithreading Ansatz wï¿½re hierfï¿½r geeignet und warum?
+         *
+         *  Berechne roundedSpeed auf mehreren Threads parallel und zeige die berechneten Werte mit
+         *  UpdateSpeedUI() im gleichen Frame an.
+         *  Welche Methoden im Game-Loop sind fï¿½r das Starten / Beenden der Berechnung sinnvoll?
+         */
+        
         private void OnTriggerEnter(Collider other)
         {
             if (other.CompareTag("FinishLine"))
@@ -330,7 +330,5 @@ namespace PolyStang
                 }
             }
         }
-
-
-      }
+    }
 }
